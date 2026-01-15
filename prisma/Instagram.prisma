@@ -1,0 +1,246 @@
+model InstagramAccountBase {
+  id                           String                    @id
+  last_searched                DateTime
+  account_created_at           String?
+  country                      String?
+  created_at                   DateTime                  @default(now())
+  lastSentEmail                DateTime?
+  username                     String
+  is_verified                  Boolean?
+  first_name                   String?
+  gender                       String?
+  niche                        String?
+  searched_for_email           Boolean                   @default(false)
+  hiddenLikes                  Boolean?
+  business_name                String?
+  use_for_training             Boolean                   @default(false)
+  approved                     CandidateApproval         @default(PENDING)
+  bio                          String                    @default("")
+  username_last_searched       DateTime                  @default(now())
+  external_link                String?
+  followers_count              Int                       @default(-1)
+  following_count              Int                       @default(-1)
+  former_username_count        String                    @default("")
+  ig_category_enum             String?
+  ig_email                     String?
+  ig_full_name                 String                    @default("")
+  last_updated                 DateTime?
+  posts_count                  Int                       @default(-1)
+  shopify_imported             Boolean                   @default(false)
+  bio_language                 String?
+  triggerBitmap                Int                       @default(0)
+  lastSentOpener               DateTime?
+  approve_counter              Int                       @default(0)
+  pfpUrl                       String?
+  de_caption_count             Int?
+  real_country                 String?
+  blacklist                    Boolean                   @default(false)
+  commented_on_de              Boolean                   @default(false)
+  ai_bio_lang                  String?
+  ai_bio_lang_conf             Int?
+  gender_conf                  Int?
+  first_name_checked_at        DateTime?
+  missing                      Boolean                   @default(false)
+  approved_at                  DateTime?
+  edited_at                    DateTime?
+  previous_name                String?
+  clone_count                  Int                       @default(0)
+  activeCampaignId             String?
+  activeLeadId                 String?
+  blacklisted_at               DateTime?
+  last_data_refresh_attempt_at DateTime?
+  last_data_refreshed_at       DateTime?
+  needs_data_refresh           Boolean                   @default(false)
+  email_sequence               EmailSequence?
+  initialAccount               InitialInstagramAccount[]
+
+  @@index([id])
+  @@index([country])
+  @@index([de_caption_count])
+  @@index([lastSentOpener])
+  @@index([username])
+  @@index([followers_count])
+  @@index([bio_language])
+  @@index([clone_count])
+  @@index([blacklist])
+  @@index([missing])
+  @@index([last_searched])
+  @@index([created_at])
+  @@index([niche])
+  @@index([searched_for_email])
+  @@index([blacklist, last_searched])
+  @@index([missing, blacklist])
+  @@index([country, niche])
+}
+
+model RelatedAccounts {
+  id          Int      @id @default(autoincrement())
+  from_id     String
+  to_id       String
+  to_username String
+  createdAt   DateTime @default(now())
+
+  @@unique([to_id, from_id])
+  @@index([from_id])
+}
+
+model UsernameHistory {
+  id        Int      @id @default(autoincrement())
+  user_id   String
+  username  String
+  createdAt DateTime @default(now())
+
+  @@unique([user_id, username])
+}
+
+model IGHistoryTable {
+  id         Int      @default(autoincrement())
+  user_id    String
+  followers  Int
+  following  Int
+  postsCount Int
+  day        Int
+  created_at DateTime @default(now())
+
+  @@unique([day, user_id, created_at])
+  @@index([day, user_id, created_at])
+}
+
+model InstagramPost {
+  id                String
+  user_id           String
+  shortcode         String
+  likes_disabled    Boolean
+  comment_count     Int
+  comments_searched Boolean  @default(false)
+  like_count        Int
+  play_count        Int?
+  reshare_count     Int?
+  product_type      String?
+  taken_at          DateTime
+  caption           String
+  created_at        DateTime @default(now())
+  updated_at        DateTime @default(now()) @updatedAt
+  caption_lang      String?
+  thumbnail         String?
+
+  @@unique([taken_at, id])
+  @@index([id])
+  @@index([user_id, taken_at, created_at])
+  @@index([comments_searched])
+  @@index([caption_lang])
+}
+
+model UniqueInstagramPost {
+  id                String   @id
+  thumbnail         String?
+  user_id           String
+  shortcode         String   @unique
+  likes_disabled    Boolean
+  comment_count     Int
+  comments_searched Boolean  @default(false)
+  like_count        Int
+  play_count        Int?
+  reshare_count     Int?
+  product_type      String?
+  taken_at          DateTime
+  caption           String
+  created_at        DateTime @default(now())
+  caption_lang      String?
+
+  @@index([user_id])
+  @@index([taken_at])
+  @@index([like_count])
+  @@index([comment_count])
+  @@index([comments_searched])
+  @@index([product_type])
+  @@index([created_at])
+  @@index([user_id, taken_at])
+  @@index([user_id, like_count])
+  @@index([taken_at, like_count])
+}
+
+model CommentedOnAccount {
+  id                 Int      @id @default(autoincrement())
+  post_owner_id      String
+  commenter_id       String
+  commenter_username String
+  createdAt          DateTime @default(now())
+
+  @@unique([post_owner_id, commenter_id])
+  @@index([post_owner_id])
+}
+
+model InitialInstagramAccount {
+  username        String                 @id @unique
+  source_type     InstagramAccountSource
+  account_id      String?
+  last_searched   DateTime?
+  not_found       Boolean                @default(false)
+  private         Boolean                @default(false)
+  created_at      DateTime               @default(now())
+  from_account_id String?
+  ig_account      InstagramAccountBase?  @relation(fields: [account_id], references: [id])
+
+  @@index([account_id])
+}
+
+model InstagramAccountBaseNoFirstName {
+  id                           String            @id
+  last_searched                DateTime
+  account_created_at           String?
+  country                      String?
+  created_at                   DateTime          @default(now())
+  lastSentEmail                DateTime?
+  username                     String
+  is_verified                  Boolean?
+  first_name                   String?
+  gender                       String?
+  niche                        String?
+  searched_for_email           Boolean           @default(false)
+  hiddenLikes                  Boolean?
+  business_name                String?
+  use_for_training             Boolean           @default(false)
+  approved                     CandidateApproval @default(PENDING)
+  bio                          String            @default("")
+  username_last_searched       DateTime          @default(now())
+  external_link                String?
+  followers_count              Int               @default(-1)
+  following_count              Int               @default(-1)
+  former_username_count        String            @default("")
+  ig_category_enum             String?
+  ig_email                     String?
+  ig_full_name                 String            @default("")
+  last_updated                 DateTime?
+  posts_count                  Int               @default(-1)
+  shopify_imported             Boolean           @default(false)
+  bio_language                 String?
+  triggerBitmap                Int               @default(0)
+  lastSentOpener               DateTime?
+  approve_counter              Int               @default(0)
+  pfpUrl                       String?
+  de_caption_count             Int?
+  real_country                 String?
+  blacklist                    Boolean           @default(false)
+  commented_on_de              Boolean           @default(false)
+  ai_bio_lang                  String?
+  ai_bio_lang_conf             Int?
+  gender_conf                  Int?
+  first_name_checked_at        DateTime?
+  missing                      Boolean           @default(false)
+  approved_at                  DateTime?
+  edited_at                    DateTime?
+  previous_name                String?
+  clone_count                  Int               @default(0)
+  activeCampaignId             String?
+  activeLeadId                 String?
+  blacklisted_at               DateTime?
+  last_data_refresh_attempt_at DateTime?
+  last_data_refreshed_at       DateTime?
+  needs_data_refresh           Boolean           @default(false)
+
+  @@index([id])
+  @@index([country])
+  @@index([username])
+  @@index([created_at])
+}

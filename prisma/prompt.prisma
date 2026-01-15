@@ -1,0 +1,10 @@
+model Prompt {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  type        String
+  description String?
+  content     String
+  enabled     Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+}

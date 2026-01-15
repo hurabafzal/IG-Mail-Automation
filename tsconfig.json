@@ -1,0 +1,29 @@
+{
+	"include": ["remix.env.d.ts", "**/*.ts", "**/*.tsx"],
+	"exclude": ["node_modules"],
+	"compilerOptions": {
+		"lib": ["DOM", "DOM.Iterable", "ES2022"],
+		"isolatedModules": true,
+		"esModuleInterop": true,
+		"jsx": "react-jsx",
+		"moduleResolution": "node",
+		"module": "ES2022",
+		"resolveJsonModule": true,
+		"target": "ES2022",
+		"strict": true,
+		"exactOptionalPropertyTypes": false,
+		"allowJs": true,
+		"forceConsistentCasingInFileNames": true,
+		"baseUrl": "./",
+		"paths": {
+			"~/*": ["./app/*"]
+		},
+		// Remix takes care of building everything in `remix build`.
+		"noEmit": true,
+		"skipLibCheck": true,
+		"types": [
+			"bun-types"
+			// add Bun global
+		]
+	}
+}

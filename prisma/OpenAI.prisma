@@ -1,0 +1,45 @@
+/// /////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////
+model GeneratedEmailRequest {
+  id                     Int                 @id @default(autoincrement())
+  email_sequence_id      Int
+  email_type             GeneratedEmailType
+  email_type_number      Int
+  openai_batch_id        String?
+  openai_request_payload Json?
+  openai_response        Json?
+  generated_subject      String?
+  generated_body         String?
+  status                 OpenAIRequestStatus @default(PENDING_SUBMISSION)
+  requested_at           DateTime            @default(now())
+  submitted_to_openai_at DateTime?
+  completed_at           DateTime?
+  failed_at              DateTime?
+  created_at             DateTime            @default(now())
+  updated_at             DateTime            @updatedAt
+  recipient_email        String?
+  email_sequence         EmailSequence       @relation(fields: [email_sequence_id], references: [id])
+  instantly_lead         InstantlyLead?
+
+  @@unique([openai_batch_id, recipient_email])
+  @@index([email_sequence_id])
+  @@index([openai_batch_id])
+  @@index([status])
+  @@index([email_type])
+}
+
+enum GeneratedEmailType {
+  OPENER
+  TRIGGER_FOLLOWER_LOSS
+  TRIGGER_FOLLOWING_INCREASE
+  TRIGGER_HIDDEN_LIKES
+}
+
+enum OpenAIRequestStatus {
+  PENDING_SUBMISSION
+  SUBMITTED
+  PROCESSING
+  COMPLETED
+  FAILED
+  CANCELLED
+}

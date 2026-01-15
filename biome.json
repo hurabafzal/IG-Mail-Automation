@@ -1,0 +1,26 @@
+{
+	"$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+	"organizeImports": {
+		"enabled": true
+	},
+	"files": {
+		"maxSize": 150000,
+		"ignore": ["public", "build"]
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true,
+			"complexity": {
+				"noStaticOnlyClass": "off"
+			},
+			"suspicious": {
+				"noArrayIndexKey": "off"
+			},
+			"style": {
+				"noNonNullAssertion": "warn",
+				"noParameterAssign": "off"
+			}
+		}
+	}
+}

@@ -1,0 +1,79 @@
+model InstantlyLead {
+  id                         Int                          @id @default(autoincrement())
+  email_sequence_id          Int
+  email_id                   Int
+  email_address              String
+  generated_email_request_id Int?                         @unique
+  instantly_campaign_id      String
+  instantly_lead_id          String
+  status                     InstantlyLeadStatus
+  verification_status        InstantlyVerificationStatus?
+  added_to_instantly_at      DateTime                     @default(now())
+  timestamp_last_contact     DateTime?
+  timestamp_last_open        DateTime?
+  created_at                 DateTime                     @default(now())
+  updated_at                 DateTime                     @updatedAt
+  email_open_count           Int?
+  email_opened_step          Int?
+  email_reply_count          Int?
+  payload                    Json?
+  email                      Email                        @relation(fields: [email_id], references: [id])
+  email_sequence             EmailSequence                @relation(fields: [email_sequence_id], references: [id])
+  generated_email_request    GeneratedEmailRequest?       @relation(fields: [generated_email_request_id], references: [id])
+
+  @@unique([instantly_campaign_id, instantly_lead_id])
+  @@index([email_sequence_id])
+  @@index([email_id])
+  @@index([instantly_lead_id])
+  @@index([status])
+  @@index([generated_email_request_id])
+}
+
+model Lead {
+  id                     String      @id
+  igid                   String
+  email                  String
+  campaign               String?
+  subsequence_id         String?
+  createdAt              DateTime    @default(now())
+  email_open_count       Int?
+  email_reply_count      Int?
+  payload                Json?
+  status                 LeadStatus?
+  timestamp_last_contact DateTime?
+  timestamp_last_open    DateTime?
+  updatedAt              DateTime?
+  email_opened_step      Int?
+
+  @@index([email])
+  @@index([igid])
+  @@index([campaign])
+}
+
+enum InstantlyLeadStatus {
+  ACTIVE
+  PAUSED
+  COMPLETED
+  BOUNCED
+  UNSUBSCRIBED
+  SKIPPED
+}
+
+enum InstantlyVerificationStatus {
+  VERIFIED
+  PENDING
+  PENDING_VERIFICATION_JOB
+  INVALID
+  RISKY
+  CATCH_ALL
+  JOB_CHANGE
+}
+
+enum LeadStatus {
+  ACTIVE
+  PAUSED
+  COMPLETED
+  BOUNCED
+  UNSUBSCRIBED
+  SKIPPED
+}

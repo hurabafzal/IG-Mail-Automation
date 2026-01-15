@@ -1,0 +1,67 @@
+/// /////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////
+model EmailSequence {
+  id                                   Int                     @id @default(autoincrement())
+  instagram_account_id                 String                  @unique
+  email                                String                  @unique
+  current_stage                        EmailSequenceStage
+  current_stage_number                 Int
+  stage_entered_at                     DateTime                @default(now())
+  next_action_possible_at              DateTime?
+  trigger_window_ends_at               DateTime?
+  last_instantly_campaign_completed_at DateTime?
+  created_at                           DateTime                @default(now())
+  updated_at                           DateTime                @updatedAt
+  sequence_id                          Int?
+  instagram_account                    InstagramAccountBase    @relation(fields: [instagram_account_id], references: [id])
+  sequence                             Sequence?               @relation(fields: [sequence_id], references: [id])
+  generated_email_requests             GeneratedEmailRequest[]
+  instantly_leads                      InstantlyLead[]
+
+  @@index([instagram_account_id])
+  @@index([current_stage])
+  @@index([next_action_possible_at])
+  @@index([trigger_window_ends_at])
+  @@index([sequence_id])
+}
+
+model Sequence {
+  id                    Int             @id @default(autoincrement())
+  name                  String
+  description           String?
+  sequence_type         SequenceType
+  stage_number          Int
+  instantly_campaign_id String          @unique
+  active                Boolean         @default(true)
+  settings              Json?
+  language              Language?
+  created_at            DateTime        @default(now())
+  updated_at            DateTime        @updatedAt
+  email_sequences       EmailSequence[]
+}
+
+enum EmailSequenceStage {
+  OPENER_PENDING_GENERATION
+  OPENER_PENDING_SEND
+  OPENER_SENT_AWAITING_COMPLETION
+  AWAITING_TRIGGERS
+  TRIGGER_EMAIL_PENDING_GENERATION
+  TRIGGER_EMAIL_PENDING_SEND
+  TRIGGER_EMAIL_SENT_AWAITING_COMPLETION
+  SEQUENCE_COMPLETED
+  SEQUENCE_PAUSED_INVALID_EMAIL
+  SEQUENCE_PAUSED_MANUAL
+  SEQUENCE_FAILED
+}
+
+enum SequenceType {
+  OPENER
+  TRIGGER_FOLLOWER_LOSS
+  TRIGGER_FOLLOWING_INCREASE
+  TRIGGER_HIDDEN_LIKES
+}
+
+enum Language {
+  DE
+  EN
+}

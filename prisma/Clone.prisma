@@ -1,0 +1,49 @@
+model UsersToClone {
+  ig_id              String
+  og_username        String
+  alt_username       String?   @unique
+  og_full_name       String
+  alt_full_name      String?
+  got_pfp            Boolean   @default(false)
+  pfp_last_attempted DateTime?
+  TaskId             Int
+  alt_name_unique    Boolean   @default(false)
+  createdAt          DateTime  @default(now())
+  name_attempts      Int       @default(0)
+  pfp_fail           Boolean   @default(false)
+  id                 Int       @id @default(autoincrement())
+  alt_bio            String?
+  task               CloneTask @relation(fields: [TaskId], references: [id])
+
+  @@index([createdAt])
+}
+
+model CloneTask {
+  id             Int            @id @default(autoincrement())
+  title          String
+  target         Int
+  createdAt      DateTime       @default(now())
+  target_female  Int            @default(0)
+  target_male    Int            @default(0)
+  target_country String?
+  UsersToClone   UsersToClone[]
+}
+
+model ManualMiningQueue {
+  id              Int       @id @default(autoincrement())
+  batch_id        String
+  username        String
+  account_id      String?
+  not_found       Boolean   @default(false)
+  private         Boolean   @default(false)
+  createdAt       DateTime  @default(now())
+  batch_title     String
+  bio             String?
+  followers_count Int?
+  following_count Int?
+  full_name       String?
+  minedAt         DateTime?
+  posts_count     Int?
+
+  @@unique([batch_id, username])
+}

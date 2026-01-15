@@ -1,0 +1,179 @@
+generator client {
+  provider = "prisma-kysely"
+  output   = "../backend/src/db"
+  fileName = "db_types.ts"
+}
+
+datasource db {
+  provider     = "postgresql"
+  url          = env("DATABASE_URL")
+  relationMode = "foreignKeys"
+}
+
+model ApiQueue {
+  id        Int            @id @default(autoincrement())
+  headers   String
+  targetURL String
+  sendOn    DateTime
+  body      String
+  status    ApiQueueStatus
+}
+
+model MixMaxTokens {
+  id        Int      @id @default(autoincrement())
+  token     String
+  email     String?
+  createdAt DateTime @default(now())
+}
+
+model Settings {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model user {
+  id           String         @id
+  username     String
+  email        String
+  pfp          String
+  user_key     user_key[]
+  user_session user_session[]
+}
+
+model user_key {
+  id              String  @id
+  user_id         String
+  hashed_password String?
+  user            user    @relation(fields: [user_id], references: [id])
+}
+
+model user_session {
+  id             String @id
+  user_id        String
+  active_expires BigInt
+  idle_expires   BigInt
+  user           user   @relation(fields: [user_id], references: [id])
+}
+
+model Counters {
+  id             Int    @id @default(autoincrement())
+  date           String @unique
+  hikerAPI_calls Int
+}
+
+model EmailVariables {
+  id               Int      @id @default(autoincrement())
+  minFollowerCount Int
+  name             String
+  value            String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @default(now()) @updatedAt
+
+  @@unique([minFollowerCount, name])
+}
+
+model JapRequest {
+  id              Int      @id @default(autoincrement())
+  username        String
+  title           String
+  ig_id           String?
+  external_url    String?
+  last_checked_at DateTime @default(now())
+  last_bought_at  DateTime @default(now())
+  created_at      DateTime @default(now())
+  last_updated_at DateTime @default(now())
+
+  @@unique([title, username])
+}
+
+model SentEmail {
+  id               Int         @id @default(autoincrement())
+  mixMaxEmailId    String      @unique
+  mixMaxSequenceId String
+  type             EmailType
+  expiresOn        DateTime
+  payload          Json
+  emailRecipient   String?
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @default(now()) @updatedAt
+  emailObj         Email?      @relation(fields: [emailRecipient], references: [email])
+  triggerLog       TriggerLog?
+}
+
+model Trigger {
+  id                  Int          @id @default(autoincrement())
+  trigger_group_id    Int
+  name                String
+  active              Boolean
+  rank                Int
+  cooldown            Int
+  params              Json         @default("{}")
+  mixMaxSequenceId1   String?
+  mixMaxSequenceId2   String?
+  icon                TriggerIcons @default(facebook)
+  description         String?
+  lang                Lang         @default(DE)
+  maxPerDay           Int          @default(200)
+  instantlyCampaignId String?
+  subsequenceId       String?
+  TriggerLog          TriggerLog[]
+}
+
+model TriggerLog {
+  id            Int        @id @default(autoincrement())
+  trigger_id    Int
+  payload       Json
+  sent_email_id Int?       @unique
+  createdAt     DateTime   @default(now())
+  instagram_id  String
+  sent_email    SentEmail? @relation(fields: [sent_email_id], references: [id])
+  trigger       Trigger    @relation(fields: [trigger_id], references: [id])
+
+  @@index([instagram_id])
+}
+
+enum ApiQueueStatus {
+  DONE
+  PENDING
+}
+
+enum InstagramAccountSource {
+  MANUAL
+  COMMENTS
+  RELATED_ACCOUNTS
+  SHOPIFY
+  ACTIVE_RELATED
+  STARNGAGE
+  HYPE_AUDIT
+}
+
+enum CandidateApproval {
+  APPROVED
+  REJECTED
+  PENDING
+}
+
+enum EmailType {
+  MANUAL
+  FOLLOWER_LOSS
+}
+
+enum TriggerIcons {
+  google
+  facebook
+  instagram
+}
+
+enum Lang {
+  EN
+  DE
+  NL
+}
+
+enum BlackListReason {
+  MANUAL
+  CUSTOMER
+}

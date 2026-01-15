@@ -1,0 +1,56 @@
+model Email {
+  id                            Int                          @id @default(autoincrement())
+  email                         String                       @unique
+  code                          Int?
+  role                          Boolean?
+  free_email                    Boolean?
+  result                        String?
+  reason                        String?
+  send_transactional            Int?
+  createdAt                     DateTime                     @default(now())
+  instagram_id                  String
+  used_reacher                  Boolean                      @default(false)
+  server_host_name              String?
+  server_host_type              EmailServerHost?
+  blacklisted_at                DateTime?
+  instantly_verification_status InstantlyVerificationStatus?
+  InstantlyLead                 InstantlyLead[]
+  SentEmail                     SentEmail[]
+
+  @@index([instagram_id])
+  @@index([email])
+}
+
+model PipedriveDeal {
+  id                    Int             @id @default(autoincrement())
+  deal_id               Int             @unique
+  deal_name             String
+  deal_status           String
+  deal_stage            String
+  next_activity_subject String?
+  followup_note_id      Int?
+  FollowupEmail         FollowupEmail[]
+
+  @@index([deal_id])
+}
+
+model FollowupEmail {
+  id                    Int           @id @default(autoincrement())
+  next_activity_subject String
+  deal_id               Int
+  fullSystemPrompt      String
+  fullResponse          String
+  recipientEmail        String
+  createdAt             DateTime      @default(now())
+  deal                  PipedriveDeal @relation(fields: [deal_id], references: [deal_id])
+}
+
+enum EmailServerHost {
+  GOOGLE
+  RZONE
+  MAIL_DE
+  IONOS_DE
+  AGENTURSERVER_DE
+  YAHOO
+  OTHER
+}

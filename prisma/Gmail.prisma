@@ -1,0 +1,47 @@
+model GmailAccount {
+  id                   Int                    @id @default(autoincrement())
+  email                String                 @unique
+  refreshToken         String
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @default(now()) @updatedAt
+  GmailAccountEmails   GmailAccountEmails[]
+  GmailForwardingRules GmailForwardingRules[]
+}
+
+model GmailAccountEmails {
+  id           Int          @id @default(autoincrement())
+  gmail        String
+  emailId      String       @unique
+  from         String
+  subject      String
+  body         String
+  to           String
+  replyTo      String
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @default(now()) @updatedAt
+  threadId     String?
+  label        GmailLabel?
+  gmailAccount GmailAccount @relation(fields: [gmail], references: [email])
+}
+
+model GmailForwardingRules {
+  id           Int                   @id @default(autoincrement())
+  sentFrom     String
+  sentTo       String
+  targetInbox  String
+  filterID     String
+  source       ForwardingRuleSource?
+  gmailAccount GmailAccount          @relation(fields: [sentTo], references: [email])
+
+  @@unique([sentFrom, sentTo, filterID, targetInbox])
+}
+
+enum GmailLabel {
+  PIPEDRIVE
+  BLACKLIST
+}
+
+enum ForwardingRuleSource {
+  STRIPE
+  PIPEDRIVE
+}

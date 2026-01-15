@@ -1,0 +1,1 @@
+export { migrateAccountsNoFirstNameCron } from "./migrateAccountsNoFirstNameCron";

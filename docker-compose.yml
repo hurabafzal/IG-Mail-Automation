@@ -1,0 +1,43 @@
+version: "3"
+services:
+  # third party services
+  db:
+    image: timescale/timescaledb-ha:pg14-latest
+    shm_size: 10g
+    ulimits:
+      memlock: -1
+    container_name: igdb
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+    volumes:
+      - db_data:/home/postgres/pgdata/data
+    ports:
+      - "5432:5432"
+    networks:
+      - app_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  reacher:
+    image: reacherhq/backend:latest
+    container_name: reacher
+    restart: always
+    ports:
+      - "8080:8080"
+    networks:
+      - app_network
+    depends_on:
+      - db
+
+# Define a network, which allows containers to communicate
+# with each other, by using their container name as a hostname
+networks:
+  app_network:
+
+# Define volumes to persist data
+volumes:
+  db_data:

@@ -1,0 +1,132 @@
+model combined_daily_statistics_recovery {
+  stat_date                 DateTime @id @db.Date
+  valid                     Int      @default(0)
+  invalid                   Int      @default(0)
+  account_disabled          Int      @default(0)
+  action_required           Int      @default(0)
+  captcha                   Int      @default(0)
+  captcha_disabled          Int      @default(0)
+  compromised               Int      @default(0)
+  email_confirmation        Int      @default(0)
+  email_verification        Int      @default(0)
+  invalid_credentials       Int      @default(0)
+  password_reset            Int      @default(0)
+  pending                   Int      @default(0)
+  phone_validation          Int      @default(0)
+  scrape_warning            Int      @default(0)
+  suspended                 Int      @default(0)
+  temporary_locked          Int      @default(0)
+  delayed                   Int      @default(0)
+  email_connection_error    Int      @default(0)
+  initializing              Int      @default(0)
+  stopped                   Int      @default(0)
+  two_factor_authentication Int      @default(0)
+  created_at                DateTime @default(now()) @db.Timestamptz(6)
+}
+
+model combined_daily_statistics_scrapers {
+  stat_date                 DateTime @db.Date
+  mp_name                   String
+  valid                     Int      @default(0)
+  invalid                   Int      @default(0)
+  slots_left                Int      @default(0)
+  account_disabled          Int      @default(0)
+  action_required           Int      @default(0)
+  captcha                   Int      @default(0)
+  captcha_disabled          Int      @default(0)
+  compromised               Int      @default(0)
+  email_confirmation        Int      @default(0)
+  email_verification        Int      @default(0)
+  invalid_credentials       Int      @default(0)
+  password_reset            Int      @default(0)
+  pending                   Int      @default(0)
+  phone_validation          Int      @default(0)
+  scrape_warning            Int      @default(0)
+  suspended                 Int      @default(0)
+  temporary_locked          Int      @default(0)
+  delayed                   Int      @default(0)
+  email_connection_error    Int      @default(0)
+  initializing              Int      @default(0)
+  stopped                   Int      @default(0)
+  two_factor_authentication Int      @default(0)
+  created_at                DateTime @default(now()) @db.Timestamptz(6)
+
+  @@id([stat_date, mp_name])
+  @@index([stat_date], map: "idx_combined_scrapers_date")
+  @@index([mp_name], map: "idx_combined_scrapers_mp")
+}
+
+model daily_statistics_recovery {
+  stat_date                 DateTime @db.Date
+  mp_name                   String
+  valid                     Int      @default(0)
+  invalid                   Int      @default(0)
+  account_disabled          Int      @default(0)
+  action_required           Int      @default(0)
+  captcha                   Int      @default(0)
+  captcha_disabled          Int      @default(0)
+  compromised               Int      @default(0)
+  email_confirmation        Int      @default(0)
+  email_verification        Int      @default(0)
+  invalid_credentials       Int      @default(0)
+  password_reset            Int      @default(0)
+  pending                   Int      @default(0)
+  phone_validation          Int      @default(0)
+  scrape_warning            Int      @default(0)
+  suspended                 Int      @default(0)
+  temporary_locked          Int      @default(0)
+  delayed                   Int      @default(0)
+  email_connection_error    Int      @default(0)
+  initializing              Int      @default(0)
+  stopped                   Int      @default(0)
+  two_factor_authentication Int      @default(0)
+  created_at                DateTime @default(now()) @db.Timestamptz(6)
+
+  @@id([stat_date, mp_name])
+  @@index([stat_date], map: "idx_daily_statistics_recovery_date")
+  @@index([mp_name], map: "idx_daily_statistics_recovery_mp")
+}
+
+model daily_statistics_scraper {
+  stat_date                 DateTime @db.Date
+  mp_name                   String
+  valid                     Int      @default(0)
+  invalid                   Int      @default(0)
+  slots_left                Int      @default(0)
+  account_disabled          Int      @default(0)
+  action_required           Int      @default(0)
+  captcha                   Int      @default(0)
+  captcha_disabled          Int      @default(0)
+  compromised               Int      @default(0)
+  email_confirmation        Int      @default(0)
+  email_verification        Int      @default(0)
+  invalid_credentials       Int      @default(0)
+  password_reset            Int      @default(0)
+  pending                   Int      @default(0)
+  phone_validation          Int      @default(0)
+  scrape_warning            Int      @default(0)
+  suspended                 Int      @default(0)
+  temporary_locked          Int      @default(0)
+  delayed                   Int      @default(0)
+  email_connection_error    Int      @default(0)
+  initializing              Int      @default(0)
+  stopped                   Int      @default(0)
+  two_factor_authentication Int      @default(0)
+  created_at                DateTime @default(now()) @db.Timestamptz(6)
+
+  @@id([stat_date, mp_name])
+  @@index([stat_date], map: "idx_daily_statistics_scraper_date")
+  @@index([mp_name], map: "idx_daily_statistics_scraper_mp")
+}
+
+model mp_account_settings {
+  stat_date           DateTime @db.Date
+  mp_name             String
+  settings            String
+  email_notifications String
+  created_at          DateTime @default(now()) @db.Timestamptz(6)
+
+  @@id([stat_date, mp_name])
+  @@index([stat_date], map: "idx_mp_account_settings_date")
+  @@index([mp_name], map: "idx_mp_account_settings_mp")
+}

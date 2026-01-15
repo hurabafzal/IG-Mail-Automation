@@ -1,0 +1,27 @@
+{
+	"editor.formatOnSave": true,
+	"json.validate.enable": false,
+	"cSpell.words": [
+		"BRIGHTDATA",
+		"Elysia",
+		"Hubspot",
+		"joleen",
+		"Lngs",
+		"MIXMAX",
+		"pipedrive",
+		"SUBPAGE",
+		"TRPC",
+		"igid"
+	],
+	"typescript.tsdk": "node_modules/typescript/lib",
+	"editor.defaultFormatter": "biomejs.biome",
+	"[typescript]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
+	"[prisma]": {
+		"editor.defaultFormatter": "Prisma.prisma"
+	},
+	"[markdown]": {
+		"editor.defaultFormatter": "yzhang.markdown-all-in-one"
+	}
+}
